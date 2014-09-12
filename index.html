@@ -25,8 +25,48 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-			// Create geometry (cube primitive)
-			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			// Create geometry (cube primitive) in simple way
+			// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			// Create geometry (cube) in more complicted way
+			var geometry = new THREE.Geometry();
+			var color = new THREE.Color( 0xffffff );
+			// Add vertices
+			geometry.vertices.push(
+				new THREE.Vector3(-1, -1, -1),
+				new THREE.Vector3( 1, -1, -1),
+				new THREE.Vector3( 1,  1, -1),
+				new THREE.Vector3(-1,  1, -1),
+				new THREE.Vector3(-1, -1,  1),
+				new THREE.Vector3( 1, -1,  1),
+				new THREE.Vector3( 1,  1,  1),
+				new THREE.Vector3(-1,  1,  1)
+			);
+			// Add faces
+			geometry.faces.push(
+				// 1ts square
+				new THREE.Face3(0, 3, 2),
+				new THREE.Face3(0, 2, 1),
+				// 2nd square
+				new THREE.Face3(0, 1, 5),
+				new THREE.Face3(0, 5, 4),
+				// 3rd square
+				new THREE.Face3(1, 2, 6),
+				new THREE.Face3(1, 6, 5),
+				// 4th square
+				new THREE.Face3(2, 3, 7),
+				new THREE.Face3(2, 7, 6),
+				// 5th square
+				new THREE.Face3(3, 0, 4),
+				new THREE.Face3(3, 4, 7),
+				// 6th square
+				new THREE.Face3(4, 5, 6),
+				new THREE.Face3(4, 6, 7)
+			);
+			// Recompute normal vectors of faces
+			geometry.computeFaceNormals();
+			// Compute bounding box of geometry
+			geometry.computeBoundingBox();
+
 			// Create simple material
 			var material = new THREE.MeshLambertMaterial( { color: 0x00aa00 } );
 			// Create object from geometry and material
@@ -36,8 +76,8 @@
 
 			// Create a point light
 			var pointLight = new THREE.PointLight(0xFFFFFF);
-			pointLight.position.x = 1;
-			pointLight.position.y = 1;
+			pointLight.position.x = 0;
+			pointLight.position.y = 0;
 			pointLight.position.z = 10;
 			// Add light to the scene
 			scene.add(pointLight);
