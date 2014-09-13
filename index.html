@@ -58,38 +58,51 @@
 			// Create geometry (cube) in more complicted way
 			var geometry = new THREE.Geometry();
 			var color = new THREE.Color( 0xffffff );
-			// Add vertices
-			geometry.vertices.push(
-				new THREE.Vector3(-1, -1, -1),
-				new THREE.Vector3( 1, -1, -1),
-				new THREE.Vector3( 1,  1, -1),
-				new THREE.Vector3(-1,  1, -1),
-				new THREE.Vector3(-1, -1,  1),
-				new THREE.Vector3( 1, -1,  1),
-				new THREE.Vector3( 1,  1,  1),
-				new THREE.Vector3(-1,  1,  1)
-			);
-			// Add faces
-			geometry.faces.push(
-				// 1ts square
-				new THREE.Face3(0, 3, 2),
-				new THREE.Face3(0, 2, 1),
-				// 2nd square
-				new THREE.Face3(0, 1, 5),
-				new THREE.Face3(0, 5, 4),
-				// 3rd square
-				new THREE.Face3(1, 2, 6),
-				new THREE.Face3(1, 6, 5),
-				// 4th square
-				new THREE.Face3(2, 3, 7),
-				new THREE.Face3(2, 7, 6),
-				// 5th square
-				new THREE.Face3(3, 0, 4),
-				new THREE.Face3(3, 4, 7),
-				// 6th square
-				new THREE.Face3(4, 5, 6),
-				new THREE.Face3(4, 6, 7)
-			);
+			// Add vertices to geometry
+			for (var i = 0; i < vertices.length; i++) {
+				geometry.vertices.push(
+					new THREE.Vector3(
+						vertices[i][0],
+						vertices[i][1],
+						vertices[i][2]
+						)
+					);
+			};
+			// Add faces to geometry
+			for (var i = 0; i < faces.length; i++) {
+				// Triangle
+				if(faces[i].length === 3) {
+					geometry.faces.push(
+						new THREE.Face3(
+							faces[i][0],
+							faces[i][1],
+							faces[i][2]
+							)
+						);
+				// Quad
+				} else if (faces[i].length === 4) {
+					//
+					// 0 +--+ 3
+					//   |\ |
+					//   | \|
+					// 1 +--+ 2
+					//
+					geometry.faces.push(
+						new THREE.Face3(
+							faces[i][0],
+							faces[i][1],
+							faces[i][2]
+							)
+						);
+					geometry.faces.push(
+						new THREE.Face3(
+							faces[i][0],
+							faces[i][2],
+							faces[i][3]
+							)
+						);
+				}
+			};
 			// Recompute normal vectors of faces
 			geometry.computeFaceNormals();
 			// Compute bounding box of geometry
