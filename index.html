@@ -20,7 +20,7 @@
 			//  |/       |/
 			// 1+--------+2
 			//
-			var vertices = [
+			var cube_vertices = [
 				[-1, -1, -1],
 				[ 1, -1, -1],
 				[ 1,  1, -1],
@@ -30,7 +30,7 @@
 				[ 1,  1,  1],
 				[-1,  1,  1]
 			];
-			var faces = [
+			var cube_faces = [
 				[0, 3, 2, 1],
 				[0, 1, 5, 4],
 				[1, 2, 6, 5],
@@ -38,6 +38,80 @@
 				[3, 0, 4, 7],
 				[4, 5, 6, 7]
 			];
+			// Pyramid geometry
+			var pyramid_vertices = [
+				[-1, -1,  0],
+				[ 1, -1,  0],
+				[ 1,  1,  0],
+				[-1,  1,  0],
+				[ 0,  0,  1]
+			];
+			var pyramid_faces = [
+				[0, 3, 2, 1],
+				[0, 1, 4],
+				[1, 2, 4],
+				[2, 3, 4],
+				[3, 0, 4]
+			];
+
+			// Function for creating geometry
+			function create_geometry (vertices, faces) {
+				// Create geometry (cube primitive) in simple way
+				// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+				// Create geometry (cube) in more complicted way
+				var geometry = new THREE.Geometry();
+				// Add vertices to geometry
+				for (var i = 0; i < vertices.length; i++) {
+					geometry.vertices.push(
+						new THREE.Vector3(
+							vertices[i][0],
+							vertices[i][1],
+							vertices[i][2]
+							)
+						);
+				};
+				// Add faces to geometry
+				for (var i = 0; i < faces.length; i++) {
+					// Triangle
+					if(faces[i].length === 3) {
+						geometry.faces.push(
+							new THREE.Face3(
+								faces[i][0],
+								faces[i][1],
+								faces[i][2]
+								)
+							);
+					// Quad
+					} else if (faces[i].length === 4) {
+						//
+						// 0 +--+ 3
+						//   |\ |
+						//   | \|
+						// 1 +--+ 2
+						//
+						geometry.faces.push(
+							new THREE.Face3(
+								faces[i][0],
+								faces[i][1],
+								faces[i][2]
+								)
+							);
+						geometry.faces.push(
+							new THREE.Face3(
+								faces[i][0],
+								faces[i][2],
+								faces[i][3]
+								)
+							);
+					}
+				};
+				// Recompute normal vectors of faces
+				geometry.computeFaceNormals();
+				// Compute bounding box of geometry
+				geometry.computeBoundingBox();
+
+				return geometry;
+			}
 
 			// Create scene
 			var scene = new THREE.Scene();
@@ -53,60 +127,9 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-			// Create geometry (cube primitive) in simple way
-			// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			// Create geometry (cube) in more complicted way
-			var geometry = new THREE.Geometry();
-			var color = new THREE.Color( 0xffffff );
-			// Add vertices to geometry
-			for (var i = 0; i < vertices.length; i++) {
-				geometry.vertices.push(
-					new THREE.Vector3(
-						vertices[i][0],
-						vertices[i][1],
-						vertices[i][2]
-						)
-					);
-			};
-			// Add faces to geometry
-			for (var i = 0; i < faces.length; i++) {
-				// Triangle
-				if(faces[i].length === 3) {
-					geometry.faces.push(
-						new THREE.Face3(
-							faces[i][0],
-							faces[i][1],
-							faces[i][2]
-							)
-						);
-				// Quad
-				} else if (faces[i].length === 4) {
-					//
-					// 0 +--+ 3
-					//   |\ |
-					//   | \|
-					// 1 +--+ 2
-					//
-					geometry.faces.push(
-						new THREE.Face3(
-							faces[i][0],
-							faces[i][1],
-							faces[i][2]
-							)
-						);
-					geometry.faces.push(
-						new THREE.Face3(
-							faces[i][0],
-							faces[i][2],
-							faces[i][3]
-							)
-						);
-				}
-			};
-			// Recompute normal vectors of faces
-			geometry.computeFaceNormals();
-			// Compute bounding box of geometry
-			geometry.computeBoundingBox();
+			// Crete geometry from array of vertices and faces
+			geometry = create_geometry(cube_vertices, cube_faces);
+			//geometry = create_geometry(pyramid_vertices, pyramid_faces);
 
 			// Create simple material
 			var material = new THREE.MeshLambertMaterial( { color: 0x00aa00 } );
@@ -132,6 +155,7 @@
 				renderer.setSize( window.innerWidth, window.innerHeight);
 			};
 
+			// Never ending loop used for rendering scene
 			function render() {
 				requestAnimationFrame( render );
 
