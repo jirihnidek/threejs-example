@@ -23,69 +23,93 @@
 			//  |/       |/
 			// 1+--------+2
 			//
-			var cube_vertices = [
-				[-1.0, -1.0, -1.0],
-				[ 1.0, -1.0, -1.0],
-				[ 1.0,  1.0, -1.0],
-				[-1.0,  1.0, -1.0],
-				[-1.0, -1.0,  1.0],
-				[ 1.0, -1.0,  1.0],
-				[ 1.0,  1.0,  1.0],
-				[-1.0,  1.0,  1.0]
-			];
-			var cube_faces = [
-				[0, 3, 2, 1],
-				[0, 1, 5, 4],
-				[1, 2, 6, 5],
-				[2, 3, 7, 6],
-				[3, 0, 4, 7],
-				[4, 5, 6, 7]
-			];
+			var cube_vertices = {
+				0: [-1.0, -1.0, -1.0],
+				1: [ 1.0, -1.0, -1.0],
+				2: [ 1.0,  1.0, -1.0],
+				3: [-1.0,  1.0, -1.0],
+				4: [-1.0, -1.0,  1.0],
+				5: [ 1.0, -1.0,  1.0],
+				6: [ 1.0,  1.0,  1.0],
+				7: [-1.0,  1.0,  1.0]
+			};
+			var cube_faces = {
+				0: [0, 3, 2, 1],
+				1: [0, 1, 5, 4],
+				2: [1, 2, 6, 5],
+				3: [2, 3, 7, 6],
+				4: [3, 0, 4, 7],
+				5: [4, 5, 6, 7]
+			};
+			// Cube with holes in geometry and topology
+			var cube_vertices_holes = {
+				0:  [-1.0, -1.0, -1.0],
+				1:  [ 1.0, -1.0, -1.0],
+				2:  [ 1.0,  1.0, -1.0],
+				3:  [-1.0,  1.0, -1.0],
+				4:  [-1.0, -1.0,  1.0],
+				7:  [ 1.0, -1.0,  1.0],
+				8:  [ 1.0,  1.0,  1.0],
+				10: [-1.0,  1.0,  1.0]
+			};
+			var cube_faces_holes = {
+				0: [0,  3,  2,  1],
+				1: [0,  1,  7,  4],
+				3: [1,  2,  8,  7],
+				5: [2,  3,  10, 8],
+				8: [3,  0,  4, 10],
+				9: [4,  7,  8, 10]
+			};
 			// Pyramid geometry
-			var pyramid_vertices = [
-				[-1.0, -1.0,  0.0],
-				[ 1.0, -1.0,  0.0],
-				[ 1.0,  1.0,  0.0],
-				[-1.0,  1.0,  0.0],
-				[ 0.0,  0.0,  1.0]
-			];
-			var pyramid_faces = [
-				[0, 3, 2, 1],
-				[0, 1, 4],
-				[1, 2, 4],
-				[2, 3, 4],
-				[3, 0, 4]
-			];
+			var pyramid_vertices = {
+				0: [-1.0, -1.0,  0.0],
+				1: [ 1.0, -1.0,  0.0],
+				2: [ 1.0,  1.0,  0.0],
+				3: [-1.0,  1.0,  0.0],
+				4: [ 0.0,  0.0,  1.0]
+			};
+			var pyramid_faces = {
+				0: [0, 3, 2, 1],
+				1: [0, 1, 4],
+				2: [1, 2, 4],
+				3: [2, 3, 4],
+				4: [3, 0, 4]
+			};
 
 			// Function for creating geometry
 			function create_geometry (vertices, faces) {
-				// Create geometry (cube primitive) in simple way
-				// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-				// Create geometry (cube) in more complicted way
+				// Create generic geometry
 				var geometry = new THREE.Geometry();
+				// Create empty look up table
+				var la_table = {};
+				// Initial index used as value in look up table
+				var index = 0;
 				// Add vertices to geometry
-				for (var i = 0; i < vertices.length; i++) {
+				for (var key in vertices) {
 					geometry.vertices.push(
 						new THREE.Vector3(
-							vertices[i][0],
-							vertices[i][1],
-							vertices[i][2]
+							vertices[key][0],
+							vertices[key][1],
+							vertices[key][2]
 							)
 						);
+					// Create mapping for Three.js, because it
+					// expects array, not hash table
+					la_table[key] = index++;
 				};
 				// Add faces to geometry
-				for (var i = 0; i < faces.length; i++) {
+				for (var key in faces) {
 					// Triangle
-					if(faces[i].length === 3) {
+					if(faces[key].length === 3) {
 						geometry.faces.push(
 							new THREE.Face3(
-								faces[i][0],
-								faces[i][1],
-								faces[i][2]
+								la_table[ faces[key][0] ],
+								la_table[ faces[key][1] ],
+								la_table[ faces[key][2] ]
 								)
 							);
 					// Quad
-					} else if (faces[i].length === 4) {
+					} else if (faces[key].length === 4) {
 						//
 						// 0 +--+ 3
 						//   |\ |
@@ -94,16 +118,16 @@
 						//
 						geometry.faces.push(
 							new THREE.Face3(
-								faces[i][0],
-								faces[i][1],
-								faces[i][2]
+								la_table[ faces[key][0] ],
+								la_table[ faces[key][1] ],
+								la_table[ faces[key][2] ]
 								)
 							);
 						geometry.faces.push(
 							new THREE.Face3(
-								faces[i][0],
-								faces[i][2],
-								faces[i][3]
+								la_table[ faces[key][0] ],
+								la_table[ faces[key][2] ],
+								la_table[ faces[key][3] ]
 								)
 							);
 					}
@@ -148,11 +172,12 @@
 			document.body.appendChild( renderer.domElement );
 
 			// Crete geometry from array of vertices and faces
-			geometry = create_geometry(cube_vertices, cube_faces);
+			//geometry = create_geometry(cube_vertices, cube_faces);
+			geometry = create_geometry(cube_vertices_holes, cube_faces_holes);
 			//geometry = create_geometry(pyramid_vertices, pyramid_faces);
 
 			// Create simple material
-			var material = new THREE.MeshLambertMaterial( { color: 0x00aa00 } );
+			var material = new THREE.MeshLambertMaterial( { color: 0x5ce5ff } );
 			// Create object from geometry and material
 			var cube = new THREE.Mesh( geometry, material );
 			// Add cube to the scene
@@ -167,7 +192,7 @@
 			scene.add( pointLight1 );
 
 			// Create a point light
-			var pointLight2 = new THREE.PointLight( 0xAAAAFF );
+			var pointLight2 = new THREE.PointLight( 0xAAAAAA );
 			pointLight2.position.x = camera.position.x - 2.0;
 			pointLight2.position.y = camera.position.y - 2.0;
 			pointLight2.position.z = camera.position.z - 6.0;
