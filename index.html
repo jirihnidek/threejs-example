@@ -24,14 +24,14 @@
 			// 1+--------+2
 			//
 			var cube_vertices = [
-				[-1, -1, -1],
-				[ 1, -1, -1],
-				[ 1,  1, -1],
-				[-1,  1, -1],
-				[-1, -1,  1],
-				[ 1, -1,  1],
-				[ 1,  1,  1],
-				[-1,  1,  1]
+				[-1.0, -1.0, -1.0],
+				[ 1.0, -1.0, -1.0],
+				[ 1.0,  1.0, -1.0],
+				[-1.0,  1.0, -1.0],
+				[-1.0, -1.0,  1.0],
+				[ 1.0, -1.0,  1.0],
+				[ 1.0,  1.0,  1.0],
+				[-1.0,  1.0,  1.0]
 			];
 			var cube_faces = [
 				[0, 3, 2, 1],
@@ -43,11 +43,11 @@
 			];
 			// Pyramid geometry
 			var pyramid_vertices = [
-				[-1, -1,  0],
-				[ 1, -1,  0],
-				[ 1,  1,  0],
-				[-1,  1,  0],
-				[ 0,  0,  1]
+				[-1.0, -1.0,  0.0],
+				[ 1.0, -1.0,  0.0],
+				[ 1.0,  1.0,  0.0],
+				[-1.0,  1.0,  0.0],
+				[ 0.0,  0.0,  1.0]
 			];
 			var pyramid_faces = [
 				[0, 3, 2, 1],
@@ -121,9 +121,9 @@
 
 			// Create camera used for rendering scene
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-			camera.position.x = 0;
-			camera.position.y = 0;
-			camera.position.z = 5;
+			camera.position.x = 0.0;
+			camera.position.y = 0.0;
+			camera.position.z = 5.0;
 
 			// Create trackball control
 			controls = new THREE.TrackballControls( camera );
@@ -158,17 +158,21 @@
 			// Add cube to the scene
 			scene.add( cube );
 
-			// Create ambient light
-			//var ambientLight = new THREE.AmbientLight( 0x404040 );
-			//scene.add( ambienLight );
+			// Create a point light
+			var pointLight1 = new THREE.PointLight( 0xFFFFFF );
+			pointLight1.position.x = camera.position.x + 0.1;
+			pointLight1.position.y = camera.position.y + 0.1;
+			pointLight1.position.z = camera.position.z + 1.0;
+			// Add light to the scene
+			scene.add( pointLight1 );
 
 			// Create a point light
-			var pointLight = new THREE.PointLight( 0xFFFFFF );
-			pointLight.position.x = camera.position.x + 0.1;
-			pointLight.position.y = camera.position.y + 0.1;
-			pointLight.position.z = camera.position.z + 5.0;
+			var pointLight2 = new THREE.PointLight( 0xAAAAFF );
+			pointLight2.position.x = camera.position.x - 2.0;
+			pointLight2.position.y = camera.position.y - 2.0;
+			pointLight2.position.z = camera.position.z - 6.0;
 			// Add light to the scene
-			scene.add( pointLight );
+			scene.add( pointLight2 );
 
 			// Callback function for resizing winoow
 			window.onresize = function(event) {
@@ -185,11 +189,14 @@
 				requestAnimationFrame( animate );
 				// Update position of camera
 				controls.update();
-				// Update position of light
-				pointLight.position.x = camera.position.x + 0.1;
-				pointLight.position.y = camera.position.y + 0.1;
-				pointLight.position.z = camera.position.z + 5.0;
-				material.needsUpdate();
+				// Update position of 1st light
+				pointLight1.position.x = camera.position.x + 0.1;
+				pointLight1.position.y = camera.position.y + 0.1;
+				pointLight1.position.z = camera.position.z + 1.0;
+				// Update position of 2nd light
+				pointLight2.position.x = camera.position.x - 2.0;
+				pointLight2.position.y = camera.position.y - 2.0;
+				pointLight2.position.z = camera.position.z - 6.0;
 				
 				render();
 			};
