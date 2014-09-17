@@ -178,21 +178,44 @@
 
 			// Create simple material
 			var material = new THREE.MeshLambertMaterial( { color: 0x5ce5ff } );
-			// Create object from geometry and material
-			var cube = new THREE.Mesh( geometry, material );
-			// Add cube to the scene
-			scene.add( cube );
+			// Create solid mesh from geometry and solid material
+			var mesh = new THREE.Mesh( geometry, material );
+
+			// Create wire frame material
+			var edge_material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true });
+			// Create wireframe mesh from geometry and wireframe material
+			var edge_mesh = new THREE.Mesh(geometry, edge_material);
+
+			// Create 3D object of two meshes
+			obj3d = new THREE.Object3D()
+			obj3d.add( mesh );
+			obj3d.add( edge_mesh );
+			// Set position of object
+			obj3d.position.x = 0.0;
+			obj3d.position.y = 0.0;
+			obj3d.position.z = 0.0;
+			// Set scale of object
+			obj3d.scale.x = 1.0;
+			obj3d.scale.y = 1.0;
+			obj3d.scale.z = 1.0;
+			// Set rotation using quaternion
+			obj3d.quaternion.x = 0.0;
+			obj3d.quaternion.y = 0.0;
+			obj3d.quaternion.z = 0.0;
+			obj3d.quaternion.w = 1.0;
+			// Add 3D object to the scene
+			scene.add( obj3d );
 
 			// Create a point light
-			var pointLight1 = new THREE.PointLight( 0xFFFFFF );
+			var pointLight1 = new THREE.PointLight( 0xffffff );
 			pointLight1.position.x = camera.position.x + 0.1;
 			pointLight1.position.y = camera.position.y + 0.1;
 			pointLight1.position.z = camera.position.z + 1.0;
 			// Add light to the scene
 			scene.add( pointLight1 );
 
-			// Create a point light
-			var pointLight2 = new THREE.PointLight( 0xAAAAAA );
+			// Create another point light
+			var pointLight2 = new THREE.PointLight( 0xaaaaaa );
 			pointLight2.position.x = camera.position.x - 2.0;
 			pointLight2.position.y = camera.position.y - 2.0;
 			pointLight2.position.z = camera.position.z - 6.0;
