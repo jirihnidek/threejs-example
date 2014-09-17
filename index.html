@@ -158,13 +158,17 @@
 			// Add cube to the scene
 			scene.add( cube );
 
+			// Create ambient light
+			//var ambientLight = new THREE.AmbientLight( 0x404040 );
+			//scene.add( ambienLight );
+
 			// Create a point light
-			var pointLight = new THREE.PointLight(0xFFFFFF);
-			pointLight.position.x = camera.position.x;
-			pointLight.position.y = camera.position.y;
+			var pointLight = new THREE.PointLight( 0xFFFFFF );
+			pointLight.position.x = camera.position.x + 0.1;
+			pointLight.position.y = camera.position.y + 0.1;
 			pointLight.position.z = camera.position.z + 5.0;
 			// Add light to the scene
-			scene.add(pointLight);
+			scene.add( pointLight );
 
 			// Callback function for resizing winoow
 			window.onresize = function(event) {
@@ -179,11 +183,14 @@
 
 			function animate() {
 				requestAnimationFrame( animate );
-				// Update position of camera and light
+				// Update position of camera
 				controls.update();
-				pointLight.position.x = camera.position.x;
-				pointLight.position.y = camera.position.y;
+				// Update position of light
+				pointLight.position.x = camera.position.x + 0.1;
+				pointLight.position.y = camera.position.y + 0.1;
 				pointLight.position.z = camera.position.z + 5.0;
+				material.needsUpdate();
+				
 				render();
 			};
 
@@ -191,6 +198,7 @@
 				renderer.render( scene, camera );
 			};
 
+			render();
 			animate();
 
 		</script>
