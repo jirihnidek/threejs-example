@@ -247,45 +247,71 @@
 			document.body.appendChild( renderer.domElement );
 
 			// Crete geometry for faces from hash table of vertices and faces
-			//face_geometry = create_face_geometry(cube_vertices, cube_faces);
-			face_geometry = create_face_geometry(cube_vertices_holes, cube_faces_holes);
-			//face_geometry = create_face_geometry(pyramid_vertices, pyramid_faces);
+			//cube_face_geometry = create_face_geometry(cube_vertices, cube_faces);
+			cube_face_geometry = create_face_geometry(cube_vertices_holes, cube_faces_holes);
+			pyramid_face_geometry = create_face_geometry(pyramid_vertices, pyramid_faces);
 
-			// Create simple material
-			var solid_material = new THREE.MeshLambertMaterial( { color: 0x5ce5ff } );
-			// Create solid mesh from geometry and solid material
-			var face_mesh = new THREE.Mesh( face_geometry, solid_material );
-
-			// Crete geometry for edges from hash table of vertices and edges
-			//var edge_geometry = create_edge_geometry( cube_vertices, cube_edges );
-			var edge_geometry = create_edge_geometry( cube_vertices_holes, cube_edges_holes );
-			//var edge_geometry = create_edge_geometry( pyramid_vertices, pyramid_edges );
+			// Create simple material (cyan)
+			var solid_cyan_material = new THREE.MeshLambertMaterial( { color: 0x5ce5ff } );
+			// Create simple material (red)
+			var solid_red_material = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
 			// Create simple material for edges
 			var edge_material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+
+			// Crete geometry for edges from hash table of vertices and edges
+			//var cube_edge_geometry = create_edge_geometry( cube_vertices, cube_edges );
+			var cube_edge_geometry = create_edge_geometry( cube_vertices_holes, cube_edges_holes );
+			var pyramid_edge_geometry = create_edge_geometry( pyramid_vertices, pyramid_edges );
+
+			// Create solid mesh from geometry and solid material
+			var cube_face_mesh = new THREE.Mesh( cube_face_geometry, solid_cyan_material );
 			// Create edge mesh from geometry and edge material
-			var edge_mesh = new THREE.Line( edge_geometry, edge_material, THREE.LinePieces );
+			var cube_edge_mesh = new THREE.Line( cube_edge_geometry, edge_material, THREE.LinePieces );
 
-			// Create 3D object of two meshes
-			obj3d = new THREE.Object3D()
-			obj3d.add( face_mesh );
-			obj3d.add( edge_mesh );
-
+			// Create 3D object of two meshes (Cube)
+			cube_obj3d = new THREE.Object3D()
+			cube_obj3d.add( cube_face_mesh );
+			cube_obj3d.add( cube_edge_mesh );
 			// Set position of object
-			obj3d.position.x = 0.0;
-			obj3d.position.y = 0.0;
-			obj3d.position.z = 0.0;
+			cube_obj3d.position.x = 0.0;
+			cube_obj3d.position.y = 0.0;
+			cube_obj3d.position.z = 1.0;
 			// Set scale of object
-			obj3d.scale.x = 1.0;
-			obj3d.scale.y = 1.0;
-			obj3d.scale.z = 1.0;
+			cube_obj3d.scale.x = 1.0;
+			cube_obj3d.scale.y = 1.0;
+			cube_obj3d.scale.z = 1.0;
 			// Set rotation using quaternion
-			obj3d.quaternion.x = 0.0;
-			obj3d.quaternion.y = 0.0;
-			obj3d.quaternion.z = 0.0;
-			obj3d.quaternion.w = 1.0;
+			cube_obj3d.quaternion.x = 0.0;
+			cube_obj3d.quaternion.y = 0.0;
+			cube_obj3d.quaternion.z = 0.0;
+			cube_obj3d.quaternion.w = 1.0;
 
-			// Add 3D object to the scene
-			scene.add( obj3d );
+			// Create solid mesh from geometry and solid material
+			var pyramid_face_mesh = new THREE.Mesh( pyramid_face_geometry, solid_red_material );
+			// Create edge mesh from geometry and edge material
+			var pyramid_edge_mesh = new THREE.Line( pyramid_edge_geometry, edge_material, THREE.LinePieces );
+
+			// Create 3D object of two meshes (Pyramid)
+			pyramid_obj3d = new THREE.Object3D()
+			pyramid_obj3d.add( pyramid_face_mesh );
+			pyramid_obj3d.add( pyramid_edge_mesh );
+			// Set position of object
+			pyramid_obj3d.position.x = 2.5;
+			pyramid_obj3d.position.y = 0.0;
+			pyramid_obj3d.position.z = 0.0;
+			// Set scale of object
+			pyramid_obj3d.scale.x = 1.0;
+			pyramid_obj3d.scale.y = 1.0;
+			pyramid_obj3d.scale.z = 1.0;
+			// Set rotation using quaternion
+			pyramid_obj3d.quaternion.x = 0.0;
+			pyramid_obj3d.quaternion.y = 0.0;
+			pyramid_obj3d.quaternion.z = 0.0;
+			pyramid_obj3d.quaternion.w = 1.0;
+
+			// Add 3D objects to the scene
+			scene.add( cube_obj3d );
+			scene.add( pyramid_obj3d );
 
 			// Create a point light
 			var pointLight1 = new THREE.PointLight( 0xffffff );
